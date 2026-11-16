@@ -1,0 +1,25 @@
+id = "crystal_optimizer"
+name = "Limitlxxs Crystal Optimizer"
+version = "0.1.0"
+description = "Makes End crystals vanish on your screen as soon as you hit them, without waiting for the server."
+authors = ["Limitlxxs"]
+api = "0.2"
+side = "client"
+
+[native]
+game = "26.3"
+horizon = "bade262391477ff2a668e3ae5ea6ee34f3115035"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+# Runs after the attack packet is sent. If the target was an end crystal, remove it locally.
+# remote_attack_entity returns true when the attack went out.
+[[native.mixin]]
+id = "crystal_pop"
+target = "horizon_client::game::remote::attack_target::Game<'_>::remote_attack_entity"
+kind = "RETURN"
+helper = "src/mixins/crystal_pop.rs"
+bindings = [
+  { name = "game", ty = "&mut Game<'_>", value = "&mut *self" },
+  { name = "id", ty = "i32", value = "id" },
+  { name = "sent", ty = "bool", value = "$value" },
+]
